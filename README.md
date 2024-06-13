@@ -1,35 +1,48 @@
-# simulador_plano_agros
+<div align="center">
 
-This template should help get you started developing with Vue 3 in Vite.
+[<img src="./public/repo_logo.svg" alt="Agros UFV" width="60%" />](https://www.agros.org.br/)
 
-## Recommended IDE Setup
+[<img  src="https://img.shields.io/static/v1?label=license&message=MIT&color=ffffff&labelColor=005cb2" alt="License">](https://github.com/GabFrancoL/lamf5_backend/blob/main/LICENSE)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+</div>
 
-## Customize configuration
+# Simulador de Contribuição de Planos
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+Página para simulação da contribuição dos planos de saúde do Agros UFV.
 
-## Project Setup
+## Tecnologias e Frameworks
+
+- [VueJS](https://vuejs.org/)
+- [Vuetify](https://vuetifyjs.com/en/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [Phosphor Icons](https://phosphoricons.com/)
+
+## Setup
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### Compilição para Desenvolvimento
 
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+### Compilição para Produção
 
 ```sh
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+### Lint com [ESLint](https://eslint.org/)
 
 ```sh
 npm run lint
+```
+
+### Formatação com [Prettier](https://prettier.io/)
+
+```sh
+npm run format
 ```
