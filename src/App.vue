@@ -10,6 +10,7 @@ import SimuladorPlanosForm from "@/components/SimuladorPlanosForm.vue"
     <SimuladorPlanosForm
         :aux="aux"
         :products="products"
+        :inst="inst"
     />
   </main>
 
@@ -21,6 +22,11 @@ import SimuladorPlanosForm from "@/components/SimuladorPlanosForm.vue"
 export default {
   data() {
     return {
+      inst: {
+        "Agros": 1,
+        "UFV": 2,
+        "UFSC": 3
+      },
       aux: {
         "0-2999.99": {
           "0 - 18": 254.18,
