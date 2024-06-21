@@ -1,0 +1,30 @@
+{
+  "AGROS MAIS SAUDE I COM ODONTOLOGIA": {
+    "tit": 22,
+    "benef": 23
+  },
+  "AGROS MAIS SAUDE I SEM ODONTOLOGIA": {
+    "tit": 20,
+    "benef": 21
+  },
+  "AGROS MAIS SAUDE II COM ODONTOLOGIA": {
+    "tit": 26,
+    "benef": 27
+  },
+  "AGROS MAIS SAUDE II SEM ODONTOLOGIA": {
+    "tit": 24,
+    "benef": 25
+  },
+  "AGROS MAIS SAUDE III COM ODONTOLOGIA": {
+    "tit": 30,
+    "benef": 31
+  },
+  "AGROS MAIS SAUDE III SEM ODONTOLOGIA": {
+    "tit": 28,
+    "benef": 29
+  },
+  "AGROS MAIS SAUDE IV COM ODONTOLOGIA": {
+    "tit": 32,
+    "benef": 33
+  }
+}

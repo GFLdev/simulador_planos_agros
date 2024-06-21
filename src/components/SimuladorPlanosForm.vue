@@ -15,26 +15,30 @@ import {
 } from '@phosphor-icons/vue'
 
 const props = defineProps({
-  products: {
-    type: Object,
-    required: true
-  },
-  aux: {
-    type: Object,
-    required: true
-  },
   inst: {
     type: Object,
     required: true
   }
 })
+import Products from '../data/Lista_de_produtos.json'
+import Assist from '../data/Valores_de_auxilio.json'
+import Price from '../data/Preco_do_produto.json'
 
-const { products, aux, inst } = toRefs(props)
+const { inst } = toRefs(props)
 
-const instList = Object.keys(inst.value)
-const prodsList = Object.keys(products.value)
-const salGroupList = Object.keys(aux.value)
-const ageGroupList = Object.keys(aux.value[Object.keys(aux.value)[0]])
+const instList = ref(inst.value)
+console.log()
+
+const productsList = ref(Products)
+const assistList = ref(Assist)
+const priceList = ref(Price)
+
+console.log('produtos')
+console.log(productsList.value)
+console.log('aux')
+console.log(assistList.value)
+console.log('preco')
+console.log(priceList.value)
 
 const selInst = ref()
 const selPlano = ref()
@@ -46,7 +50,7 @@ const selBenefsAgeGroup = ref([])
 const req = ref([false, false, false, false])
 
 const grossContrib = ref(-1)
-const auxTotal = ref(-1)
+const assistTotal = ref(-1)
 const liqContrib = ref(-1)
 
 function simAble(index) {
@@ -76,18 +80,43 @@ function decrementBenef() {
 }
 
 function simulate() {
-  // Titular
-  grossContrib.value = products.value[selPlano.value][selTitAgeGroup.value]
-  auxTotal.value = aux.value[selSalGroup.value][selTitAgeGroup.value]
+  let plano = selPlano.value
+  let sal = selSalGroup.value
+
+  let grossTemp = 0
+  let assistTemp = 0
 
   // Beneficiários
   for (let key in selBenefsAgeGroup.value) {
-    let val = selBenefsAgeGroup.value[key]
-    grossContrib.value += products.value[selPlano.value][val]
-    auxTotal.value += aux.value[selSalGroup.value][val]
+    let age = selBenefsAgeGroup.value[key]
+
+    grossTemp += parseFloat(
+      priceList.value[
+        productsList.value[plano]['tit']
+        ][age]?.replace(',', '.')
+    )
+
+    assistTemp += parseFloat(
+      assistList.value[sal][age]?.replace(',', '.')
+    )
   }
 
-  let dif = grossContrib.value - auxTotal.value
+  let age = selTitAgeGroup.value
+
+  // Titular
+  grossTemp += parseFloat(
+    priceList.value[
+      productsList.value[plano]['tit']
+      ][age]?.replace(',', '.')
+  )
+
+  assistTemp += parseFloat(
+    assistList.value[sal][age]?.replace(',', '.')
+  )
+
+  grossContrib.value = grossTemp
+  assistTotal.value = assistTemp
+  let dif = grossContrib.value - assistTotal.value
   liqContrib.value = dif < 0 ? 0 : dif
 
   haveSim.value = true
@@ -98,7 +127,7 @@ function simulate() {
   <div class="w-full flex flex-col align-center gap-4">
     <div class="w-full sm:w-96 flex flex-col justify-center">
       <v-select
-        :items="instList"
+        :items="Object.keys(instList)"
         density="comfortable"
         label="Instituição"
         variant="underlined"
@@ -107,7 +136,7 @@ function simulate() {
         :prepend-inner-icon="selInst ? null : PhBuilding"
       ></v-select>
       <v-select
-        :items="prodsList"
+        :items="Object.keys(productsList)"
         density="comfortable"
         label="Tipo de Plano"
         variant="underlined"
@@ -116,7 +145,7 @@ function simulate() {
         :prepend-inner-icon="PhScroll"
       ></v-select>
       <v-select
-        :items="salGroupList"
+        :items="Object.keys(assistList)"
         density="comfortable"
         label="Faixa salarial do grupo familiar"
         variant="underlined"
@@ -125,7 +154,7 @@ function simulate() {
         :prepend-inner-icon="PhMoney"
       ></v-select>
       <v-select
-        :items="ageGroupList"
+        :items="Object.keys(Object.values(priceList)[0])"
         density="comfortable"
         label="Faixa etária do titular"
         variant="underlined"
@@ -136,7 +165,7 @@ function simulate() {
       <v-select
         v-for="index in benefCount"
         :key="index"
-        :items="ageGroupList"
+        :items="Object.keys(Object.values(priceList)[0])"
         density="comfortable"
         :label="'Faixa etária do beneficiário ' + index"
         variant="underlined"
@@ -172,21 +201,21 @@ function simulate() {
     </div>
     <v-divider class="w-full px-8 border-black mt-4" :opacity="0.4"></v-divider>
     <div>
-      <v-list lines="one" density="comfortable" v-if="isAble() && haveSim()">
+      <v-list lines="one" density="comfortable" v-if="haveSim()">
         <v-list-item
           title="Contribuição Bruta do Grupo Familiar"
           :subtitle="'R$ ' + grossContrib.toFixed(2)"
         ></v-list-item>
         <v-list-item
           title="Auxílio Suplementar do Grupo Familiar"
-          :subtitle="'R$ ' + auxTotal.toFixed(2)"
+          :subtitle="'R$ ' + assistTotal.toFixed(2)"
         ></v-list-item>
         <v-list-item
           title="Contribuição Devida do Grupo Familiar"
           :subtitle="'R$ ' + liqContrib.toFixed(2)"
         ></v-list-item>
       </v-list>
-      <p v-if="!haveSim() || !isAble()">Selecione todos os campos</p>
+      <p v-if="!haveSim()">Selecione todos os campos</p>
     </div>
   </div>
 </template>
