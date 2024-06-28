@@ -1,5 +1,5 @@
 <script setup>
-import { ref, toRefs } from 'vue'
+import { ref } from 'vue'
 import {
   PhBuilding,
   PhScroll,
@@ -14,7 +14,7 @@ import {
   PhUserGear
 } from '@phosphor-icons/vue'
 
-const props = defineProps({
+defineProps({
   inst: {
     type: Object,
     required: true
@@ -24,21 +24,11 @@ import Products from '../data/Lista_de_produtos.json'
 import Assist from '../data/Valores_de_auxilio.json'
 import Price from '../data/Preco_do_produto.json'
 
-const { inst } = toRefs(props)
-
-const instList = ref(inst.value)
-console.log()
+const type = ref(true)
 
 const productsList = ref(Products)
 const assistList = ref(Assist)
 const priceList = ref(Price)
-
-console.log('produtos')
-console.log(productsList.value)
-console.log('aux')
-console.log(assistList.value)
-console.log('preco')
-console.log(priceList.value)
 
 const selInst = ref()
 const selPlano = ref()
@@ -52,6 +42,13 @@ const req = ref([false, false, false, false])
 const grossContrib = ref(-1)
 const assistTotal = ref(-1)
 const liqContrib = ref(-1)
+
+function changeType() {
+  type.value = !type.value
+  grossContrib.value = -1
+  assistTotal.value = -1
+  liqContrib.value = -1
+}
 
 function simAble(index) {
   req.value[index] = true
@@ -92,13 +89,15 @@ function simulate() {
 
     grossTemp += parseFloat(
       priceList.value[
-        productsList.value[plano]['tit']
+        productsList.value[plano][type.value ? 'tit' : 'benef']
         ][age]?.replace(',', '.')
     )
 
-    assistTemp += parseFloat(
-      assistList.value[sal][age]?.replace(',', '.')
-    )
+    if (type.value) {
+      assistTemp += parseFloat(
+        assistList.value[sal][age]?.replace(',', '.')
+      )
+    }
   }
 
   let age = selTitAgeGroup.value
@@ -106,13 +105,15 @@ function simulate() {
   // Titular
   grossTemp += parseFloat(
     priceList.value[
-      productsList.value[plano]['tit']
+      productsList.value[plano][type.value ? 'tit' : 'benef']
       ][age]?.replace(',', '.')
   )
 
-  assistTemp += parseFloat(
-    assistList.value[sal][age]?.replace(',', '.')
-  )
+  if (type.value) {
+    assistTemp += parseFloat(
+      assistList.value[sal][age]?.replace(',', '.')
+    )
+  }
 
   grossContrib.value = grossTemp
   assistTotal.value = assistTemp
@@ -125,9 +126,27 @@ function simulate() {
 
 <template>
   <div class="w-full flex flex-col align-center gap-4">
+    <div class="flex flex-col sm:flex-row gap-4 w-full justify-center pb-4">
+      <v-btn
+        variant="outlined"
+        @click="changeType"
+        class="sm:w-1/2"
+        :disabled="type"
+      >
+        Plano Titular
+      </v-btn>
+      <v-btn
+        variant="outlined"
+        @click="changeType"
+        class="sm:w-1/2"
+        :disabled="!type"
+      >
+        Plano Agregado
+      </v-btn>
+    </div>
     <div class="w-full sm:w-96 flex flex-col justify-center">
       <v-select
-        :items="Object.keys(instList)"
+        :items="inst"
         density="comfortable"
         label="Instituição"
         variant="underlined"
@@ -156,7 +175,9 @@ function simulate() {
       <v-select
         :items="Object.keys(Object.values(priceList)[0])"
         density="comfortable"
-        label="Faixa etária do titular"
+        :label="type ?
+          'Faixa etária do titular' :
+          'Faixa etária do agregado 1'"
         variant="underlined"
         v-model="selTitAgeGroup"
         @update:modelValue="simAble(3)"
@@ -167,7 +188,9 @@ function simulate() {
         :key="index"
         :items="Object.keys(Object.values(priceList)[0])"
         density="comfortable"
-        :label="'Faixa etária do beneficiário ' + index"
+        :label="type ?
+          'Faixa etária do beneficiário ' + index :
+          'Faixa etária do agregado ' + (index + 1)"
         variant="underlined"
         v-model="selBenefsAgeGroup[index]"
         @update:modelValue="simAble(3 + index)"
@@ -176,17 +199,23 @@ function simulate() {
         "
       ></v-select>
     </div>
-    <div class="flex flex-col sm:flex-row gap-4 w-fit justify-center">
-      <v-btn variant="outlined" @click="incrementBenef" :prepend-icon="PhUserPlus">
-        Adicionar beneficiário
+    <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
+      <v-btn
+        variant="outlined"
+        @click="incrementBenef"
+        :prepend-icon="PhUserPlus"
+        class="sm:w-1/2"
+      >
+        Adicionar{{ type ? ' beneficiário' : ' agregado' }}
       </v-btn>
       <v-btn
         variant="outlined"
         @click="decrementBenef"
         :disabled="benefCount === 0"
         :prepend-icon="PhUserMinus"
+        class="sm:w-1/2"
       >
-        Remover beneficiário
+        Remover{{ type ? ' beneficiário' : ' agregado' }}
       </v-btn>
     </div>
     <div class="w-fit">
@@ -205,10 +234,12 @@ function simulate() {
         <v-list-item
           title="Contribuição Bruta do Grupo Familiar"
           :subtitle="'R$ ' + grossContrib.toFixed(2)"
+          v-if="type"
         ></v-list-item>
         <v-list-item
           title="Auxílio Suplementar do Grupo Familiar"
           :subtitle="'R$ ' + assistTotal.toFixed(2)"
+          v-if="type"
         ></v-list-item>
         <v-list-item
           title="Contribuição Devida do Grupo Familiar"
