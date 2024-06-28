@@ -1,15 +1,17 @@
 <script setup>
 import SimPlanoTitBenefForm from '@/components/SimPlanoTitBenefForm.vue'
+import Header from "@/components/SimHeader.vue";
+import Footer from "@/components/SimFooter.vue";
 </script>
 
 <template>
-  <header></header>
+  <Header></Header>
 
   <main>
-    <SimPlanoTitBenefForm :inst="inst" />
+    <SimPlanoTitBenefForm :inst="inst"/>
   </main>
 
-  <footer></footer>
+  <Footer></Footer>
 </template>
 
 <script>

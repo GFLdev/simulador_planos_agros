@@ -1,6 +1,6 @@
 <div align="center">
 
-[<img src="./public/repo_logo.svg" alt="Agros UFV" width="60%" />](https://www.agros.org.br/)
+[<img src="./public/logo.svg" alt="Agros UFV" width="60%" />](https://www.agros.org.br/)
 
 [<img  src="https://img.shields.io/static/v1?label=license&message=MIT&color=ffffff&labelColor=005cb2" alt="License">](https://github.com/GFLdev/simulador_planos_agros/blob/main/LICENSE)
 
