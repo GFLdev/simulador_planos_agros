@@ -126,7 +126,7 @@ function simulate() {
 </script>
 
 <template>
-  <div class="w-full flex flex-col align-center gap-4">
+  <div class="w-full flex flex-col align-center gap-4 my-10">
     <div class="flex flex-col sm:flex-row gap-4 w-full justify-center pb-4">
       <v-btn
           variant="outlined"
@@ -151,7 +151,7 @@ function simulate() {
           variant="underlined"
           v-model="selInst"
           @update:modelValue="simAble(0)"
-          :prepend-inner-icon="selInst ? null : PhBuilding"
+          :prepend-inner-icon="PhBuilding"
       ></v-select>
       <v-select
           :items="Object.keys(productsList)"
