@@ -1,6 +1,6 @@
 <!--@formatter:on-->
 <script setup>
-import {ref} from 'vue'
+import { ref } from 'vue'
 import {
   PhBuilding,
   PhScroll,
@@ -89,15 +89,14 @@ function simulate() {
     let age = selBenefsAgeGroup.value[key]
 
     grossTemp += parseFloat(
-        priceList.value[
-            productsList.value[plano][type.value ? 'tit' : 'benef']
-            ][age]?.replace(',', '.')
+      priceList.value[productsList.value[plano][type.value ? 'tit' : 'benef']][age]?.replace(
+        ',',
+        '.'
+      )
     )
 
     if (type.value) {
-      assistTemp += parseFloat(
-          assistList.value[sal][age]?.replace(',', '.')
-      )
+      assistTemp += parseFloat(assistList.value[sal][age]?.replace(',', '.'))
     }
   }
 
@@ -105,15 +104,11 @@ function simulate() {
 
   // Titular
   grossTemp += parseFloat(
-      priceList.value[
-          productsList.value[plano][type.value ? 'tit' : 'benef']
-          ][age]?.replace(',', '.')
+    priceList.value[productsList.value[plano][type.value ? 'tit' : 'benef']][age]?.replace(',', '.')
   )
 
   if (type.value) {
-    assistTemp += parseFloat(
-        assistList.value[sal][age]?.replace(',', '.')
-    )
+    assistTemp += parseFloat(assistList.value[sal][age]?.replace(',', '.'))
   }
 
   grossContrib.value = grossTemp
@@ -128,104 +123,82 @@ function simulate() {
 <template>
   <div class="w-full flex flex-col align-center gap-4 my-10">
     <div class="flex flex-col sm:flex-row gap-4 w-full justify-center pb-4">
-      <v-btn
-          variant="outlined"
-          @click="changeType(true)"
-          class="sm:w-1/2"
-      >
-        Plano Titular
-      </v-btn>
-      <v-btn
-          variant="outlined"
-          @click="changeType(false)"
-          class="sm:w-1/2"
-      >
-        Plano Agregado
-      </v-btn>
+      <v-btn variant="outlined" @click="changeType(true)" class="sm:w-1/2"> Plano Titular </v-btn>
+      <v-btn variant="outlined" @click="changeType(false)" class="sm:w-1/2"> Plano Agregado </v-btn>
     </div>
     <div class="w-full sm:w-96 flex flex-col justify-center">
       <v-select
-          :items="inst"
-          density="comfortable"
-          label="Instituição"
-          variant="underlined"
-          v-model="selInst"
-          @update:modelValue="simAble(0)"
-          :prepend-inner-icon="PhBuilding"
+        :items="inst"
+        density="comfortable"
+        label="Instituição"
+        variant="underlined"
+        v-model="selInst"
+        @update:modelValue="simAble(0)"
+        :prepend-inner-icon="PhBuilding"
       ></v-select>
       <v-select
-          :items="Object.keys(productsList)"
-          density="comfortable"
-          label="Tipo de Plano"
-          variant="underlined"
-          v-model="selPlano"
-          @update:modelValue="simAble(1)"
-          :prepend-inner-icon="PhScroll"
+        :items="Object.keys(productsList)"
+        density="comfortable"
+        label="Tipo de Plano"
+        variant="underlined"
+        v-model="selPlano"
+        @update:modelValue="simAble(1)"
+        :prepend-inner-icon="PhScroll"
       ></v-select>
       <v-select
-          :items="Object.keys(assistList)"
-          density="comfortable"
-          label="Faixa salarial do grupo familiar"
-          variant="underlined"
-          v-model="selSalGroup"
-          @update:modelValue="simAble(2)"
-          :prepend-inner-icon="PhMoney"
+        :items="Object.keys(assistList)"
+        density="comfortable"
+        label="Faixa salarial do grupo familiar"
+        variant="underlined"
+        v-model="selSalGroup"
+        @update:modelValue="simAble(2)"
+        :prepend-inner-icon="PhMoney"
       ></v-select>
       <v-select
-          :items="Object.keys(Object.values(priceList)[0])"
-          density="comfortable"
-          :label="type ?
-          'Faixa etária do titular' :
-          'Faixa etária do agregado 1'"
-          variant="underlined"
-          v-model="selTitAgeGroup"
-          @update:modelValue="simAble(3)"
-          :prepend-inner-icon="PhUserGear"
+        :items="Object.keys(Object.values(priceList)[0])"
+        density="comfortable"
+        :label="type ? 'Faixa etária do titular' : 'Faixa etária do agregado 1'"
+        variant="underlined"
+        v-model="selTitAgeGroup"
+        @update:modelValue="simAble(3)"
+        :prepend-inner-icon="PhUserGear"
       ></v-select>
       <v-select
-          v-for="index in benefCount"
-          :key="index"
-          :items="Object.keys(Object.values(priceList)[0])"
-          density="comfortable"
-          :label="type ?
-          'Faixa etária do beneficiário ' + index :
-          'Faixa etária do agregado ' + (index + 1)"
-          variant="underlined"
-          v-model="selBenefsAgeGroup[index]"
-          @update:modelValue="simAble(3 + index)"
-          :prepend-inner-icon="
-          index === 1 ?
-            PhUser : index === 2 ?
-              PhUsers : index === 3 ?
-                PhUsersThree : PhUsersFour
+        v-for="index in benefCount"
+        :key="index"
+        :items="Object.keys(Object.values(priceList)[0])"
+        density="comfortable"
+        :label="
+          type ? 'Faixa etária do beneficiário ' + index : 'Faixa etária do agregado ' + (index + 1)
+        "
+        variant="underlined"
+        v-model="selBenefsAgeGroup[index]"
+        @update:modelValue="simAble(3 + index)"
+        :prepend-inner-icon="
+          index === 1 ? PhUser : index === 2 ? PhUsers : index === 3 ? PhUsersThree : PhUsersFour
         "
       ></v-select>
     </div>
     <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
-      <v-btn
-          variant="outlined"
-          @click="incrementBenef"
-          :prepend-icon="PhUserPlus"
-          class="sm:w-1/2"
-      >
+      <v-btn variant="outlined" @click="incrementBenef" :prepend-icon="PhUserPlus" class="sm:w-1/2">
         Adicionar{{ type ? ' beneficiário' : ' agregado' }}
       </v-btn>
       <v-btn
-          variant="outlined"
-          @click="decrementBenef"
-          :disabled="benefCount === 0"
-          :prepend-icon="PhUserMinus"
-          class="sm:w-1/2"
+        variant="outlined"
+        @click="decrementBenef"
+        :disabled="benefCount === 0"
+        :prepend-icon="PhUserMinus"
+        class="sm:w-1/2"
       >
         Remover{{ type ? ' beneficiário' : ' agregado' }}
       </v-btn>
     </div>
     <div class="w-fit">
       <v-btn
-          variant="outlined"
-          @click="simulate"
-          :disabled="!isAble()"
-          :prepend-icon="PhCalculator"
+        variant="outlined"
+        @click="simulate"
+        :disabled="!isAble()"
+        :prepend-icon="PhCalculator"
       >
         Simular
       </v-btn>
@@ -234,18 +207,18 @@ function simulate() {
     <div>
       <v-list lines="one" density="comfortable" v-if="haveSim()">
         <v-list-item
-            title="Contribuição Bruta do Grupo Familiar"
-            :subtitle="'R$ ' + grossContrib.toFixed(2)"
-            v-if="type"
+          title="Contribuição Bruta do Grupo Familiar"
+          :subtitle="'R$ ' + grossContrib.toFixed(2)"
+          v-if="type"
         ></v-list-item>
         <v-list-item
-            title="Auxílio Suplementar do Grupo Familiar"
-            :subtitle="'R$ ' + assistTotal.toFixed(2)"
-            v-if="type"
+          title="Auxílio Suplementar do Grupo Familiar"
+          :subtitle="'R$ ' + assistTotal.toFixed(2)"
+          v-if="type"
         ></v-list-item>
         <v-list-item
-            title="Contribuição Devida do Grupo Familiar"
-            :subtitle="'R$ ' + liqContrib.toFixed(2)"
+          title="Contribuição Devida do Grupo Familiar"
+          :subtitle="'R$ ' + liqContrib.toFixed(2)"
         ></v-list-item>
       </v-list>
       <p v-if="!haveSim()">Selecione todos os campos</p>
