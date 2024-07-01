@@ -25,7 +25,7 @@ import Products from '../data/Lista_de_produtos.json'
 import Assist from '../data/Valores_de_auxilio.json'
 import Price from '../data/Preco_do_produto.json'
 
-const type = ref(true)
+const type = ref(0)
 
 const productsList = ref(Products)
 const assistList = ref(Assist)
@@ -44,11 +44,22 @@ const grossContrib = ref(-1)
 const assistTotal = ref(-1)
 const liqContrib = ref(-1)
 
-function changeType(val) {
-  type.value = val
+function reset() {
+  selSalGroup.value = null
+  selTitAgeGroup.value = null
+  benefCount.value = 0
+  selBenefsAgeGroup.value = []
+
+  req.value = [true, true, false, false]
+
   grossContrib.value = -1
   assistTotal.value = -1
   liqContrib.value = -1
+}
+
+function changeType(val) {
+  type.value = val
+  reset()
 }
 
 function simAble(index) {
@@ -121,10 +132,26 @@ function simulate() {
 </script>
 
 <template>
-  <div class="w-full flex flex-col align-center gap-4 my-10">
+  <div class="w-full flex flex-col align-center gap-4 my-10 drop-shadow-lg">
     <div class="flex flex-col sm:flex-row gap-4 w-full justify-center pb-4">
-      <v-btn variant="outlined" @click="changeType(true)" class="sm:w-1/2"> Plano Titular </v-btn>
-      <v-btn variant="outlined" @click="changeType(false)" class="sm:w-1/2"> Plano Agregado </v-btn>
+      <v-btn
+        id="tit_btn"
+        variant="outlined"
+        @click="changeType(0)"
+        class="sm:w-1/2"
+        :active="type === 0"
+      >
+        Plano Titular
+      </v-btn>
+      <v-btn
+        id="agreg_btn"
+        variant="outlined"
+        @click="changeType(1)"
+        class="sm:w-1/2"
+        :active=" type === 1"
+      >
+        Plano Agregado
+      </v-btn>
     </div>
     <div class="w-full sm:w-96 flex flex-col justify-center">
       <v-select
@@ -226,4 +253,11 @@ function simulate() {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.v-btn {
+  @apply
+  bg-primary
+  text-white
+  !important;
+}
+</style>
