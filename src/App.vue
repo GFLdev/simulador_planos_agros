@@ -8,20 +8,10 @@ import Footer from '@/components/SimFooter.vue'
   <Header></Header>
 
   <main>
-    <SimPlanoTitBenefForm :inst="inst" />
+    <SimPlanoTitBenefForm />
   </main>
 
   <Footer></Footer>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      inst: ['Agros/UFV']
-    }
-  }
-}
-</script>
 
 <style scoped></style>

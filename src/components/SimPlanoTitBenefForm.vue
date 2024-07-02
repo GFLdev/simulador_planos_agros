@@ -15,12 +15,6 @@ import {
   PhUserGear
 } from '@phosphor-icons/vue'
 
-defineProps({
-  inst: {
-    type: Object,
-    required: true
-  }
-})
 import Products from '../data/Lista_de_produtos.json'
 import Assist from '../data/Valores_de_auxilio.json'
 import Price from '../data/Preco_do_produto.json'
@@ -44,7 +38,13 @@ const grossContrib = ref(-1)
 const assistTotal = ref(-1)
 const liqContrib = ref(-1)
 
-function reset() {
+function resetInst() {
+  resetType()
+  simAble(0)
+  selPlano.value = null
+}
+
+function resetType() {
   selSalGroup.value = null
   selTitAgeGroup.value = null
   benefCount.value = 0
@@ -59,7 +59,7 @@ function reset() {
 
 function changeType(val) {
   type.value = val
-  reset()
+  resetType()
 }
 
 function simAble(index) {
@@ -91,22 +91,23 @@ function decrementBenef() {
 function simulate() {
   let plano = selPlano.value
   let sal = selSalGroup.value
+  let selType = type.value
 
   let grossTemp = 0
   let assistTemp = 0
+
+  let prodName = productsList.value[selInst.value]
+  let prodId = prodName[plano][selType === 0 ? 'tit' : 'agreg']
 
   // Beneficiários
   for (let key in selBenefsAgeGroup.value) {
     let age = selBenefsAgeGroup.value[key]
 
     grossTemp += parseFloat(
-      priceList.value[productsList.value[plano][type.value ? 'tit' : 'benef']][age]?.replace(
-        ',',
-        '.'
-      )
+      priceList.value[prodId][age]?.replace(',', '.')
     )
 
-    if (type.value) {
+    if (selType === 0) {
       assistTemp += parseFloat(assistList.value[sal][age]?.replace(',', '.'))
     }
   }
@@ -115,10 +116,10 @@ function simulate() {
 
   // Titular
   grossTemp += parseFloat(
-    priceList.value[productsList.value[plano][type.value ? 'tit' : 'benef']][age]?.replace(',', '.')
+    priceList.value[prodId][age]?.replace(',', '.')
   )
 
-  if (type.value) {
+  if (selType === 0) {
     assistTemp += parseFloat(assistList.value[sal][age]?.replace(',', '.'))
   }
 
@@ -148,27 +149,28 @@ function simulate() {
         variant="outlined"
         @click="changeType(1)"
         class="sm:w-1/2"
-        :active=" type === 1"
+        :active="type === 1"
       >
         Plano Agregado
       </v-btn>
     </div>
     <div class="w-full sm:w-96 flex flex-col justify-center">
       <v-select
-        :items="inst"
+        :items="Object.keys(productsList)"
         density="comfortable"
         label="Instituição"
         variant="underlined"
         v-model="selInst"
-        @update:modelValue="simAble(0)"
+        @update:modelValue="resetInst"
         :prepend-inner-icon="PhBuilding"
       ></v-select>
       <v-select
-        :items="Object.keys(productsList)"
+        :items="selInst ? Object.keys(productsList[selInst]) : []"
         density="comfortable"
         label="Tipo de Plano"
         variant="underlined"
         v-model="selPlano"
+        :disabled="!selInst"
         @update:modelValue="simAble(1)"
         :prepend-inner-icon="PhScroll"
       ></v-select>
@@ -178,15 +180,17 @@ function simulate() {
         label="Faixa salarial do grupo familiar"
         variant="underlined"
         v-model="selSalGroup"
+        :disabled="!selInst"
         @update:modelValue="simAble(2)"
         :prepend-inner-icon="PhMoney"
       ></v-select>
       <v-select
         :items="Object.keys(Object.values(priceList)[0])"
         density="comfortable"
-        :label="type ? 'Faixa etária do titular' : 'Faixa etária do agregado 1'"
+        :label="type === 0 ? 'Faixa etária do titular' : 'Faixa etária do agregado 1'"
         variant="underlined"
         v-model="selTitAgeGroup"
+        :disabled="!selInst"
         @update:modelValue="simAble(3)"
         :prepend-inner-icon="PhUserGear"
       ></v-select>
@@ -196,10 +200,11 @@ function simulate() {
         :items="Object.keys(Object.values(priceList)[0])"
         density="comfortable"
         :label="
-          type ? 'Faixa etária do beneficiário ' + index : 'Faixa etária do agregado ' + (index + 1)
+          type === 0 ? 'Faixa etária do beneficiário ' + index : 'Faixa etária do agregado ' + (index + 1)
         "
         variant="underlined"
         v-model="selBenefsAgeGroup[index]"
+        :disabled="!selInst"
         @update:modelValue="simAble(3 + index)"
         :prepend-inner-icon="
           index === 1 ? PhUser : index === 2 ? PhUsers : index === 3 ? PhUsersThree : PhUsersFour
@@ -208,7 +213,7 @@ function simulate() {
     </div>
     <div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
       <v-btn variant="outlined" @click="incrementBenef" :prepend-icon="PhUserPlus" class="sm:w-1/2">
-        Adicionar{{ type ? ' beneficiário' : ' agregado' }}
+        Adicionar{{ type === 0 ? ' beneficiário' : ' agregado' }}
       </v-btn>
       <v-btn
         variant="outlined"
@@ -217,7 +222,7 @@ function simulate() {
         :prepend-icon="PhUserMinus"
         class="sm:w-1/2"
       >
-        Remover{{ type ? ' beneficiário' : ' agregado' }}
+        Remover{{ type === 0 ? ' beneficiário' : ' agregado' }}
       </v-btn>
     </div>
     <div class="w-fit">
@@ -236,12 +241,12 @@ function simulate() {
         <v-list-item
           title="Contribuição Bruta do Grupo Familiar"
           :subtitle="'R$ ' + grossContrib.toFixed(2)"
-          v-if="type"
+          v-if="type === 0"
         ></v-list-item>
         <v-list-item
           title="Auxílio Suplementar do Grupo Familiar"
           :subtitle="'R$ ' + assistTotal.toFixed(2)"
-          v-if="type"
+          v-if="type === 0"
         ></v-list-item>
         <v-list-item
           title="Contribuição Devida do Grupo Familiar"
