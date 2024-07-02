@@ -1,0 +1,42 @@
+{
+  "AGROS/UFV": {
+    "AGROS MAIS SAUDE I COM ODONTOLOGIA": {
+      "tit": 22,
+      "agreg": 23
+    },
+    "AGROS MAIS SAUDE I SEM ODONTOLOGIA": {
+      "tit": 20,
+      "agreg": 21
+    },
+    "AGROS MAIS SAUDE II COM ODONTOLOGIA": {
+      "tit": 26,
+      "agreg": 27
+    },
+    "AGROS MAIS SAUDE II SEM ODONTOLOGIA": {
+      "tit": 24,
+      "agreg": 25
+    },
+    "AGROS MAIS SAUDE III COM ODONTOLOGIA": {
+      "tit": 30,
+      "agreg": 31
+    },
+    "AGROS MAIS SAUDE III SEM ODONTOLOGIA": {
+      "tit": 28,
+      "agreg": 29
+    },
+    "AGROS MAIS SAUDE IV COM ODONTOLOGIA": {
+      "tit": 32,
+      "agreg": 33
+    }
+  },
+  "UFSJ": {
+    "AGROS MAIS SAUDE V SEM ODONTOLOGIA": {
+      "tit": 100,
+      "agreg": 101
+    },
+    "AGROS MAIS SAUDE VI SEM ODONTOLOGIA": {
+      "tit": 104,
+      "agreg": 105
+    }
+  }
+}
