@@ -11,7 +11,7 @@ import PREVIC from '/previc.png'
     >
       <PhHospital :size="64" weight="fill" id="footer_icon" />
       <div class="flex flex-col max-w-xl justify-center items-center gap-4">
-        <p class="text-xl sm:text-left">
+        <p class="text-xl sm:text-left text-gray-dark">
           Vamos construir um futuro de prosperidade e saúde juntos?
         </p>
         <v-btn id="contact_btn" href="https://www.agros.org.br/fale-conosco" target="_blank">

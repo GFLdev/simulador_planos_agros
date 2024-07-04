@@ -30,28 +30,31 @@ function formatPrice(price) {
 <template>
   <v-list lines="one" density="comfortable" elevation="5" class="px-8 py-4">
     <v-list-item>
-      <span>Valor da Contribuição Bruta do Grupo Familiar</span>
+      <span><span class="calc_id">(A)</span> Valor da contribuição bruta do grupo familiar</span>
       <br />
       <span class="result_values_label">{{ formatPrice(grossContrib) }}</span>
     </v-list-item>
     <v-list-item>
-      <span>Auxílio-Saúde do Grupo Familiar</span>
+      <span><span class="calc_id">(B)</span> Auxílio-saúde do grupo familiar</span>
       <br />
       <span class="result_values_label">{{ formatPrice(assistTotal) }}</span>
     </v-list-item>
     <v-list-item>
-      <span>Valor da Contribuição a ser pago pelo Grupo Familiar</span>
+      <span><span class="calc_id">(C)</span> Valor a ser pago pelo grupo familiar</span>
       <br />
       <span class="result_values_label">{{ formatPrice(liqPrevAgregContrib) }}</span>
     </v-list-item>
     <div v-if="agregsContrib.length > 0">
       <v-list-item v-for="index in agregsContrib.length" :key="index">
-        <span>Valor da Contribuição a ser pago pelo Agregado {{ index }}</span>
+        <span>
+          <span class="calc_id"> (D{{ agregsContrib.length > 1 ? '.' + index : '' }}) </span> Valor
+          da contribuição a ser pago pelo agregado {{ index }}
+        </span>
         <br />
         <span class="result_values_label">{{ formatPrice(agregsContrib[index - 1]) }}</span>
       </v-list-item>
       <v-list-item>
-        <span>Valor da Total</span>
+        <span><span class="calc_id">(E)</span> Valor total a ser pago</span>
         <br />
         <span class="result_values_label">{{ formatPrice(liqContrib) }}</span>
       </v-list-item>
@@ -65,6 +68,12 @@ function formatPrice(price) {
 </template>
 
 <style scoped>
+.calc_id {
+  @apply text-primary
+  font-bold
+  !important;
+}
+
 .v-btn {
   @apply bg-primary
   text-white
@@ -73,7 +82,6 @@ function formatPrice(price) {
 
 .v-list {
   @apply text-center
-  text-lg
   !important;
 }
 

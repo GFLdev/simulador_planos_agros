@@ -30,11 +30,11 @@
     }
   },
   "UFSJ": {
-    "MAIS SAUDE V SEM ODONTO (APARTAMENTO)": {
+    "MAIS SAUDE V (APARTAMENTO)": {
       "tit": 100,
       "agreg": 101
     },
-    "MAIS SAUDE VI SEM ODONTO (ENFERMARIA)": {
+    "MAIS SAUDE VI (ENFERMARIA)": {
       "tit": 104,
       "agreg": 105
     }

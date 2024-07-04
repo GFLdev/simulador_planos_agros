@@ -181,13 +181,14 @@ function simulate() {
           <b>
             O valor do auxílio-saúde é subtraído do valor de contribuição do titular e dos
             dependentes diretos </b
-          >. Em alguns casos, dependendo do salário do titular e das idades dos Dependentes, o valor
+          >. Em alguns casos, dependendo do salário do titular e das idades dos dependentes, o valor
           devido ao plano pode ser igual a zero.
         </v-list-item>
         <v-list-item :prepend-icon="PhNumberThree">
-          Os demais dependentes são chamados de "agregados" (filhos acima de 21 anos ou de 24 anos,
-          netos e bisnetos) e não têm direito ao auxílio-saúde suplementar, por isso, para eles a
-          contribuição devida é igual ao valor da tabela.
+          Os demais dependentes são chamados de “agregados”: filhos acima de 21 anos ou de 24 anos,
+          se forem estudantes universitários; netos; e bisnetos.
+          <b>Os agregados não têm direito ao auxílio-saúde</b>, por isso, a contribuição devida por
+          eles é igual ao valor informado na tabela de contribuição
         </v-list-item>
       </v-list>
       <div id="form_container">
@@ -218,7 +219,7 @@ function simulate() {
             <v-select
               :items="Object.keys(assistList)"
               density="comfortable"
-              label="Faixa salarial do titular"
+              label="Faixa salarial do titular (valor bruto)"
               variant="underlined"
               v-model="selSalGroup"
               :disabled="!selInst"
@@ -236,7 +237,7 @@ function simulate() {
               :prepend-inner-icon="PhUserGear"
             ></v-select>
           </div>
-          <div class="flex flex-col md:flex-row gap-8">
+          <div class="flex flex-col lg:flex-row gap-8">
             <div id="dep_container">
               <h2>Dependente(s)</h2>
               <v-select
@@ -338,38 +339,83 @@ function simulate() {
         </div>
       </div>
     </div>
-    <v-divider
-      v-if="haveSim && grossContrib !== -1"
-      class="w-full px-8 border-black mt-4 max-w-[80rem]"
-      :opacity="0.4"
-    ></v-divider>
-    <SimResult
-      v-if="haveSim && grossContrib !== -1"
-      :liqContrib="liqContrib"
-      :agregsContrib="agregsContrib"
-      :liqPrevAgregContrib="liqPrevAgregContrib"
-      :assistTotal="assistTotal"
-      :grossContrib="grossContrib"
-    />
+    <v-divider class="w-full px-8 border-black my-4 max-w-[80rem]" :opacity="0.4"></v-divider>
+    <div class="flex flex-col lg:flex-row w-full justify-center items-center lg:items-start gap-8">
+      <v-list elevation="5" id="calc_info">
+        <v-list-item class="calc_info_item">
+          <h2 class="font-bold text-base text-center mb-2">Planos sem agregados</h2>
+          <span class="calc_id">(A)</span> Valor da contribuição bruta do grupo familiar (titular e
+          dependentes diretos) – <span class="calc_id">(B)</span> Auxílio-saúde do grupo familiar =
+          <span class="calc_id">(C)</span> Valor a ser pago pelo grupo familiar.
+        </v-list-item>
+        <v-list-item class="calc_info_item">
+          <h2 class="font-bold text-base text-center mb-2">Planos com agregados</h2>
+          <span class="calc_id">(A)</span> Valor da contribuição bruta do grupo familiar (titular e
+          dependentes diretos) – <span class="calc_id">(B)</span> Auxílio-saúde do grupo familiar +
+          <span class="calc_id">(D)</span> Valor da contribuição do agregado =
+          <span class="calc_id">(E)</span>
+          Valor total a ser pago.
+        </v-list-item>
+      </v-list>
+      <SimResult
+        v-if="haveSim && grossContrib !== -1"
+        :liqContrib="liqContrib"
+        :agregsContrib="agregsContrib"
+        :liqPrevAgregContrib="liqPrevAgregContrib"
+        :assistTotal="assistTotal"
+        :grossContrib="grossContrib"
+      />
+    </div>
     <v-list id="warning_label" elevation="5">
       <v-list-item-title>Importante</v-list-item-title>
-      <v-list-item>
-        Os valores obtidos nesta simulação resultam de projeções e têm caráter apenas ilustrativo,
-        não gerando qualquer direito ou obrigação do Agros quanto ao seu recebimento.
+      <v-list-item :prepend-icon="PhNumberOne">
+        Os valores obtidos nesta simulação são baseados nas tabelas vigentes dos plano de saúde do
+        Agros e podem sofrer alterações até o momento da sua adesão ao plano, considerando
+        alterações de faixa salarial, etária ou de outras características do grupo familiar. Dessa
+        forma, os resultados têm caráter ilustrativo, não gerando qualquer obrigação ao Agros.
+      </v-list-item>
+      <v-list-item :prepend-icon="PhNumberTwo">
+        As tabelas completas de contribuições aos planos e de auxílio-saúde estão disponíveis em
+        <a
+          href="https://www.agros.org.br/saude/tabelas-de-contribuicao-ao-plano-de-saude"
+          target="_blank"
+          class="text-primary"
+        >
+          https://www.agros.org.br/saude/tabelas-de-contribuicao-ao-plano-de-saude
+        </a>
       </v-list-item>
     </v-list>
   </div>
 </template>
 
 <style scoped>
-.v-btn {
-  @apply bg-primary
-  text-white
+.calc_id {
+  @apply text-primary
+  font-bold
   !important;
 }
 
-#sim_about_list {
-  @apply text-secondary
+#calc_info {
+  @apply content-center
+  py-4
+  px-8
+  w-full
+  max-w-[32rem]
+  flex
+  flex-col
+  gap-8
+  !important;
+}
+
+.calc_info_item {
+  @apply text-sm
+  text-gray-dark
+  !important;
+}
+
+.v-btn {
+  @apply bg-primary
+  text-white
   !important;
 }
 
@@ -424,15 +470,16 @@ function simulate() {
   !important;
 }
 
-#warning_label > .v-list-item-title {
-  @apply font-bold
-  text-center
-  text-xl
-  mb-4
+#warning_label > .v-list-item {
+  @apply text-sm
   !important;
 }
 
-#calc_list {
-  @apply !important;
+#warning_label > .v-list-item-title {
+  @apply font-bold
+  text-center
+  text-lg
+  mb-4
+  !important;
 }
 </style>
