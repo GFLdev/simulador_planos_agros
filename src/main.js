@@ -11,8 +11,16 @@ const vuetify = createVuetify({
   directives
 })
 
+// VueRouter
+import { createMemoryHistory, createRouter } from 'vue-router'
+const routes = [{ path: '/', component: App }]
+const router = createRouter({
+  history: createMemoryHistory(),
+  routes
+})
+
 // Vue
 import { createApp } from 'vue'
 import App from './App.vue'
 
-createApp(App).use(vuetify).mount('#app')
+createApp(App).use(vuetify).use(router).mount('#app')

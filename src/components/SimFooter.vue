@@ -14,7 +14,7 @@ import PREVIC from '/previc.png'
         <p class="text-xl sm:text-left text-gray-dark">
           Vamos construir um futuro de prosperidade e saúde juntos?
         </p>
-        <v-btn id="contact_btn" href="https://www.agros.org.br/fale-conosco" target="_blank">
+        <v-btn id="contact_btn" href="https://www.agros.org.br/fale-com-o-agros" target="_blank">
           Fale Conosco
         </v-btn>
       </div>

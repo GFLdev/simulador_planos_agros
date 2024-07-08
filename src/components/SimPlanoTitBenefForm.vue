@@ -39,6 +39,8 @@ const agregCount = ref(0)
 const selAgregsAgeGroup = ref([])
 
 const req = ref([false, false, false, false])
+const depReq = ref([])
+const agregsReq = ref([])
 
 const grossContrib = ref(-1)
 const assistTotal = ref(-1)
@@ -53,14 +55,16 @@ function resetInst() {
 }
 
 function resetType() {
-  selSalGroup.value = null
-  selTitAgeGroup.value = null
   depCount.value = 0
   agregCount.value = 0
+
+  depReq.value = []
+  agregsReq.value = []
+
   selBenefsAgeGroup.value = []
   selAgregsAgeGroup.value = []
 
-  req.value = [true, true, false, false]
+  req.value = [true, false, !!selSalGroup.value, !!selTitAgeGroup.value]
 
   grossContrib.value = -1
   assistTotal.value = -1
@@ -72,7 +76,9 @@ function simAble(index) {
 }
 
 function isAble() {
-  return req.value.every((x) => x)
+  return (
+    req.value.every((x) => x) && depReq.value.every((x) => x) && agregsReq.value.every((x) => x)
+  )
 }
 
 function haveSim() {
@@ -83,11 +89,11 @@ function increment(type) {
   if (type) {
     depCount.value++
     selBenefsAgeGroup.value.push()
-    req.value.push(false)
+    depReq.value.push(false)
   } else {
     agregCount.value++
     selAgregsAgeGroup.value.push()
-    req.value.push(false)
+    agregsReq.value.push(false)
   }
 }
 
@@ -96,13 +102,13 @@ function decrement(type) {
     if (depCount.value > 0) {
       depCount.value--
       selBenefsAgeGroup.value.pop()
-      req.value.pop()
+      depReq.value.pop()
     }
   } else {
     if (agregCount.value > 0) {
       agregCount.value--
       selAgregsAgeGroup.value.pop()
-      req.value.pop()
+      agregsReq.value.pop()
     }
   }
 }
@@ -229,7 +235,7 @@ function simulate() {
             <v-select
               :items="Object.keys(Object.values(priceList)[0])"
               density="comfortable"
-              :label="type ? 'Faixa etária do titular' : 'Faixa etária do agregado 1'"
+              label="Faixa etária do titular"
               variant="underlined"
               v-model="selTitAgeGroup"
               :disabled="!selInst"
@@ -249,7 +255,7 @@ function simulate() {
                 variant="underlined"
                 v-model="selBenefsAgeGroup[index]"
                 :disabled="!selInst"
-                @update:modelValue="simAble(3 + index)"
+                @update:modelValue="depReq[index - 1] = true"
                 :prepend-inner-icon="
                   index === 1
                     ? PhUser
@@ -292,7 +298,7 @@ function simulate() {
                 variant="underlined"
                 v-model="selAgregsAgeGroup[index]"
                 :disabled="!selInst"
-                @update:modelValue="simAble(3 + index + depCount)"
+                @update:modelValue="agregsReq[index - 1] = true"
                 :prepend-inner-icon="
                   index === 1
                     ? PhUser
@@ -364,6 +370,12 @@ function simulate() {
         :liqPrevAgregContrib="liqPrevAgregContrib"
         :assistTotal="assistTotal"
         :grossContrib="grossContrib"
+        :inst="selInst"
+        :plano="selPlano"
+        :salGroup="selSalGroup"
+        :titAgeGroup="selTitAgeGroup"
+        :benefsAgeGroup="selBenefsAgeGroup"
+        :agregsAgeGroup="selAgregsAgeGroup"
       />
     </div>
     <v-list id="warning_label" elevation="5">
