@@ -38,5 +38,15 @@
       "tit": 104,
       "agreg": 105
     }
+  },
+  "UFJF": {
+    "MAIS SAUDE V (APARTAMENTO)": {
+      "tit": 100,
+      "agreg": 101
+    },
+    "MAIS SAUDE VI (ENFERMARIA)": {
+      "tit": 104,
+      "agreg": 105
+    }
   }
 }

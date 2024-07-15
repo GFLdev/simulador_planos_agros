@@ -17,17 +17,19 @@ import {
   PhNumberTwo,
   PhNumberThree
 } from '@phosphor-icons/vue'
+import SimResult from '@/components/SimResult.vue'
 
+// Importacao das tabelas (JSON)
 import Products from '../data/Lista_de_produtos.json'
 import Assist from '../data/Valores_de_auxilio.json'
 import Price from '../data/Preco_do_produto.json'
-import SimResult from '@/components/SimResult.vue'
-
-const type = ref(true)
 
 const productsList = ref(Products)
 const assistList = ref(Assist)
 const priceList = ref(Price)
+
+// Variaveis de estado
+const type = ref(true) // Deprecated
 
 const selInst = ref()
 const selPlano = ref()
@@ -38,16 +40,19 @@ const selBenefsAgeGroup = ref([])
 const agregCount = ref(0)
 const selAgregsAgeGroup = ref([])
 
+// Estado para habilitacao do botao de simular
 const req = ref([false, false, false, false])
 const depReq = ref([])
 const agregsReq = ref([])
 
+// Variaveis de armazenamento do calculo da simulacao
 const grossContrib = ref(-1)
 const assistTotal = ref(-1)
 const liqPrevAgregContrib = ref(-1)
 const agregsContrib = ref([])
 const liqContrib = ref(-1)
 
+// Reseta os inputs ao trocar de instituicao
 function resetInst() {
   resetType()
   simAble(0)
@@ -75,12 +80,14 @@ function simAble(index) {
   req.value[index] = true
 }
 
+// Verificacao para o botao de simulacao
 function isAble() {
   return (
     req.value.every((x) => x) && depReq.value.every((x) => x) && agregsReq.value.every((x) => x)
   )
 }
 
+// Verificacao para manter a ultima simulacao renderizada na pagina
 function haveSim() {
   return grossContrib.value !== -1
 }

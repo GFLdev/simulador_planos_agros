@@ -1,5 +1,5 @@
 <script setup>
-import {ref, toRef} from 'vue'
+import { ref, toRef } from 'vue'
 import {
   PhIdentificationCard,
   PhAt,
@@ -10,6 +10,7 @@ import {
   PhCheckCircle,
   PhXCircle
 } from '@phosphor-icons/vue'
+import { formatEmail, formatPrice } from '@/middleware/formatEmail.js'
 
 const props = defineProps({
   grossContrib: {
@@ -78,47 +79,45 @@ function closeDialog() {
   dialog.value = false
 }
 
-function formatPrice(price) {
-  return price.toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})
-}
-
 async function sendEmailHandler() {
   loading.value = true
+  const emailBody = formatEmail(
+    name.value,
+    toRef(props.inst).value,
+    toRef(props.plano).value,
+    toRef(props.salGroup).value,
+    toRef(props.titAgeGroup).value,
+    toRef(props.benefsAgeGroup).value,
+    toRef(props.agregsAgeGroup).value,
+    toRef(props.grossContrib).value,
+    toRef(props.assistTotal).value,
+    toRef(props.liqPrevAgregContrib).value,
+    toRef(props.agregsContrib).value,
+    toRef(props.liqContrib).value
+  )
+
   const requestOptions = {
     method: 'POST',
-    port: '8080',
-    headers: {'Content-Type': 'application/json'},
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify({
-      info: {
-        name: name.value,
-        email: email.value
-      },
-      data: {
-        grossContrib: toRef(props.grossContrib).value,
-        assistTotal: toRef(props.assistTotal).value,
-        liqPrevAgregContrib: toRef(props.liqPrevAgregContrib).value,
-        agregsContrib: toRef(props.agregsContrib).value,
-        liqContrib: toRef(props.liqContrib).value,
-        inst: toRef(props.inst).value,
-        plano: toRef(props.plano).value,
-        salGroup: toRef(props.salGroup).value,
-        titAgeGroup: toRef(props.titAgeGroup).value,
-        benefsAgeGroup: toRef(props.benefsAgeGroup).value,
-        agregsAgeGroup: toRef(props.agregsAgeGroup).value
-      }
+      "emailToId": email.value,
+      "emailToName": name.value,
+      "emailSubject": "Simulador do Plano de Saúde - Agros",
+      "emailBody": emailBody
     })
   }
 
-  const res = await fetch('http://192.168.146.112:8080', requestOptions)
-    .finally(() => loading.value = false)
+  const res = await fetch('http://192.168.146.3/Sender/Mail/SendMail', requestOptions).finally(
+    () => (loading.value = false)
+  )
 
   const data = await res.json()
 
-  console.log(data)
-
-  statusCode.value = res.status
-  console.log(res.status)
-
+  statusCode.value = data.code
+  statusText.value = data.message
 }
 </script>
 
@@ -126,17 +125,17 @@ async function sendEmailHandler() {
   <v-list lines="one" density="comfortable" elevation="5" class="px-8 py-4">
     <v-list-item>
       <span><span class="calc_id">(A)</span> Valor da contribuição bruta do grupo familiar</span>
-      <br/>
+      <br />
       <span class="result_values_label">{{ formatPrice(grossContrib) }}</span>
     </v-list-item>
     <v-list-item>
       <span><span class="calc_id">(B)</span> Auxílio-saúde do grupo familiar</span>
-      <br/>
+      <br />
       <span class="result_values_label">{{ formatPrice(assistTotal) }}</span>
     </v-list-item>
     <v-list-item>
       <span><span class="calc_id">(C)</span> Valor a ser pago pelo grupo familiar</span>
-      <br/>
+      <br />
       <span class="result_values_label">{{ formatPrice(liqPrevAgregContrib) }}</span>
     </v-list-item>
     <div v-if="agregsContrib.length > 0">
@@ -145,12 +144,12 @@ async function sendEmailHandler() {
           <span class="calc_id"> (D{{ agregsContrib.length > 1 ? '.' + index : '' }}) </span> Valor
           da contribuição a ser pago pelo agregado {{ index }}
         </span>
-        <br/>
+        <br />
         <span class="result_values_label">{{ formatPrice(agregsContrib[index - 1]) }}</span>
       </v-list-item>
       <v-list-item>
         <span><span class="calc_id">(E)</span> Valor total a ser pago</span>
-        <br/>
+        <br />
         <span class="result_values_label">{{ formatPrice(liqContrib) }}</span>
       </v-list-item>
     </div>
@@ -166,13 +165,13 @@ async function sendEmailHandler() {
           <v-card-title>
             <div class="flex flex-row justify-center gap-2">
               <span class="w-fit block" v-if="!statusCode">
-                <PhEnvelope class="text-3xl"/>
+                <PhEnvelope class="text-3xl" />
               </span>
               <span class="w-fit block" v-else-if="statusCode >= 200 && statusCode < 300">
-                <PhCheckCircle class="text-3xl"/>
+                <PhCheckCircle class="text-3xl" />
               </span>
               <span class="w-fit block" v-else>
-                <PhXCircle class="text-3xl"/>
+                <PhXCircle class="text-3xl" />
               </span>
               <h1>
                 {{
@@ -215,12 +214,7 @@ async function sendEmailHandler() {
               <v-btn
                 :text="loading ? 'Enviando' : 'Enviar'"
                 id="send_email_btn"
-                :disabled="
-                  !email ||
-                  !name ||
-                  loading ||
-                  !!statusCode
-                "
+                :disabled="!email || !name || loading || !!statusCode"
                 :prepend-icon="loading ? PhSpinner : PhPaperPlaneTilt"
                 @click="sendEmailHandler"
               ></v-btn>
