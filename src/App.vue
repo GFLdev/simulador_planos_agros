@@ -5,11 +5,13 @@ import Footer from '@/components/SimFooter.vue'
 </script>
 
 <template>
-  <Header></Header>
+  <section>
+    <Header></Header>
 
-  <main>
-    <SimPlanoTitBenefForm />
-  </main>
+    <main>
+      <SimPlanoTitBenefForm />
+    </main>
+  </section>
 
   <Footer></Footer>
 </template>
