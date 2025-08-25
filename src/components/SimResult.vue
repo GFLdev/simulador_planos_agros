@@ -100,17 +100,18 @@ async function sendEmailHandler() {
     method: 'POST',
     mode: 'cors',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
     },
     body: JSON.stringify({
-      "emailToId": email.value,
-      "emailToName": name.value,
-      "emailSubject": "Simulador do Plano de Saúde - Agros",
-      "emailBody": emailBody
+      emailToId: email.value,
+      emailToName: name.value,
+      emailSubject: 'Simulador do Plano de Saúde - Agros',
+      emailBody: emailBody
     })
   }
 
-  const res = await fetch('http://192.168.146.3/Sender/Mail/SendMail', requestOptions).finally(
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/send-email`, requestOptions).finally(
     () => (loading.value = false)
   )
 
@@ -153,82 +154,82 @@ async function sendEmailHandler() {
         <span class="result_values_label">{{ formatPrice(liqContrib) }}</span>
       </v-list-item>
     </div>
-    <div class="flex justify-center items-center my-4">
-      <v-btn @click="openDialog" id="open_dialog_btn"> Receba essa simulação por e-mail</v-btn>
-      <v-dialog
-        v-model="dialog"
-        width="auto"
-        :onclose="closeDialog"
-        @keydown.enter="!!email && !!name && !loading ? sendEmailHandler : null"
-      >
-        <v-card id="send_email_popup">
-          <v-card-title>
-            <div class="flex flex-row justify-center gap-2">
-              <span class="w-fit block" v-if="!statusCode">
-                <PhEnvelope class="text-3xl" />
-              </span>
-              <span class="w-fit block" v-else-if="statusCode >= 200 && statusCode < 300">
-                <PhCheckCircle class="text-3xl" />
-              </span>
-              <span class="w-fit block" v-else>
-                <PhXCircle class="text-3xl" />
-              </span>
-              <h1>
-                {{
-                  !statusCode
-                    ? 'Preencha os campos para o envio do email'
-                    : statusCode >= 200 && statusCode < 300
-                      ? 'Sucesso'
-                      : 'Erro'
-                }}
-              </h1>
-            </div>
-          </v-card-title>
-          <div v-if="statusCode >= 200 && statusCode < 300">
-            <p>Email enviado com sucesso para {{ email }}</p>
-          </div>
-          <div v-else-if="statusCode">
-            <p>{{ statusText }}</p>
-          </div>
-          <div v-else>
-            <v-text-field
-              label="Nome"
-              density="comfortable"
-              variant="underlined"
-              :prepend-inner-icon="PhIdentificationCard"
-              :v-if="!statusCode"
-              v-model="name"
-            ></v-text-field>
-            <v-text-field
-              label="Email"
-              density="comfortable"
-              variant="underlined"
-              :v-if="!statusCode"
-              :prepend-inner-icon="PhAt"
-              v-model="email"
-              type="email"
-            ></v-text-field>
-          </div>
-          <template v-slot:actions>
-            <div id="email_btn_container">
-              <v-btn
-                :text="loading ? 'Enviando' : 'Enviar'"
-                id="send_email_btn"
-                :disabled="!email || !name || loading || !!statusCode"
-                :prepend-icon="loading ? PhSpinner : PhPaperPlaneTilt"
-                @click="sendEmailHandler"
-              ></v-btn>
-              <v-btn
-                text="Fechar"
-                id="close_dialog_btn"
-                :prepend-icon="PhX"
-                @click="closeDialog"
-              ></v-btn>
-            </div>
-          </template>
-        </v-card>
-      </v-dialog>
-    </div>
+<!--    <div class="flex justify-center items-center my-4">-->
+<!--      <v-btn @click="openDialog" id="open_dialog_btn"> Receba essa simulação por e-mail</v-btn>-->
+<!--      <v-dialog-->
+<!--        v-model="dialog"-->
+<!--        width="auto"-->
+<!--        :onclose="closeDialog"-->
+<!--        @keydown.enter="!!email && !!name && !loading ? sendEmailHandler : null"-->
+<!--      >-->
+<!--        <v-card id="send_email_popup">-->
+<!--          <v-card-title>-->
+<!--            <div class="flex flex-row justify-center gap-2">-->
+<!--              <span class="w-fit block" v-if="!statusCode">-->
+<!--                <PhEnvelope class="text-3xl" />-->
+<!--              </span>-->
+<!--              <span class="w-fit block" v-else-if="statusCode >= 200 && statusCode < 300">-->
+<!--                <PhCheckCircle class="text-3xl" />-->
+<!--              </span>-->
+<!--              <span class="w-fit block" v-else>-->
+<!--                <PhXCircle class="text-3xl" />-->
+<!--              </span>-->
+<!--              <h1>-->
+<!--                {{-->
+<!--                  !statusCode-->
+<!--                    ? 'Preencha os campos para o envio do email'-->
+<!--                    : statusCode >= 200 && statusCode < 300-->
+<!--                      ? 'Sucesso'-->
+<!--                      : 'Erro'-->
+<!--                }}-->
+<!--              </h1>-->
+<!--            </div>-->
+<!--          </v-card-title>-->
+<!--          <div v-if="statusCode >= 200 && statusCode < 300">-->
+<!--            <p>Email enviado com sucesso para {{ email }}</p>-->
+<!--          </div>-->
+<!--          <div v-else-if="statusCode">-->
+<!--            <p>{{ statusText }}</p>-->
+<!--          </div>-->
+<!--          <div v-else>-->
+<!--            <v-text-field-->
+<!--              label="Nome"-->
+<!--              density="comfortable"-->
+<!--              variant="underlined"-->
+<!--              :prepend-inner-icon="PhIdentificationCard"-->
+<!--              :v-if="!statusCode"-->
+<!--              v-model="name"-->
+<!--            ></v-text-field>-->
+<!--            <v-text-field-->
+<!--              label="Email"-->
+<!--              density="comfortable"-->
+<!--              variant="underlined"-->
+<!--              :v-if="!statusCode"-->
+<!--              :prepend-inner-icon="PhAt"-->
+<!--              v-model="email"-->
+<!--              type="email"-->
+<!--            ></v-text-field>-->
+<!--          </div>-->
+<!--          <template v-slot:actions>-->
+<!--            <div id="email_btn_container">-->
+<!--              <v-btn-->
+<!--                :text="loading ? 'Enviando' : 'Enviar'"-->
+<!--                id="send_email_btn"-->
+<!--                :disabled="!email || !name || loading || !!statusCode"-->
+<!--                :prepend-icon="loading ? PhSpinner : PhPaperPlaneTilt"-->
+<!--                @click="sendEmailHandler"-->
+<!--              ></v-btn>-->
+<!--              <v-btn-->
+<!--                text="Fechar"-->
+<!--                id="close_dialog_btn"-->
+<!--                :prepend-icon="PhX"-->
+<!--                @click="closeDialog"-->
+<!--              ></v-btn>-->
+<!--            </div>-->
+<!--          </template>-->
+<!--        </v-card>-->
+<!--      </v-dialog>-->
+<!--    </div>-->
   </v-list>
 </template>
 

@@ -48,5 +48,25 @@
       "tit": 104,
       "agreg": 105
     }
+  },
+  "FUNARBE": {
+    "MAIS SAUDE V (APARTAMENTO)": {
+      "tit": 100,
+      "agreg": 101
+    },
+    "MAIS SAUDE VI (ENFERMARIA)": {
+      "tit": 104,
+      "agreg": 105
+    }
+  },
+  "NOVAS PATROCINADORAS PÚBLICAS": {
+    "MAIS SAUDE VII SEM ODONTO (APARTAMENTO)": {
+      "tit": 106,
+      "agreg": 107
+    },
+    "MAIS SAUDE VIII SEM ODONTO (ENFERMARIA)": {
+      "tit": 108,
+      "agreg": 109
+    }
   }
 }

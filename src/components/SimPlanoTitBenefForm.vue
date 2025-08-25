@@ -15,7 +15,8 @@ import {
   PhUserGear,
   PhNumberOne,
   PhNumberTwo,
-  PhNumberThree
+  PhNumberThree,
+  PhNumberFour
 } from '@phosphor-icons/vue'
 import SimResult from '@/components/SimResult.vue'
 
@@ -138,7 +139,7 @@ function simulate() {
     let price = priceList.value[prodId['tit']][age]
 
     grossTemp += price
-    assistTemp += assistList.value[sal][age]
+    assistTemp += selInst.value === 'FUNARBE' ? price / 2 : assistList.value[sal][age]
   }
 
   // Dependentes
@@ -147,7 +148,7 @@ function simulate() {
     let price = priceList.value[prodId['tit']][age]
 
     grossTemp += price
-    assistTemp += assistList.value[sal][age]
+    assistTemp += selInst.value === 'FUNARBE' ? price / 2 : assistList.value[sal][age]
   }
 
   // Agregados
@@ -186,9 +187,10 @@ function simulate() {
           seus dependentes inscritos no plano:
         </h2>
         <v-list-item :prepend-icon="PhNumberOne">
-          O titular e os dependentes diretos (cônjuges e filhos de até 21 anos, ou até 24, se forem
-          estudantes universitários) recebem um auxílio-saúde do governo, que varia de acordo com o
-          salário do titular e a idade dele e dos dependentes.
+          <b>No caso dos servidores públicos federais, o titular e os dependentes diretos</b>
+          (cônjuges e filhos de até 21 anos, ou até 24, se forem estudantes universitários)
+          <b>recebem um auxílio-saúde do governo</b>, que varia de acordo com o salário do titular e
+          a idade dele e dos dependentes.
         </v-list-item>
         <v-list-item :prepend-icon="PhNumberTwo">
           <b>
@@ -198,6 +200,13 @@ function simulate() {
           devido ao plano pode ser igual a zero.
         </v-list-item>
         <v-list-item :prepend-icon="PhNumberThree">
+          <b
+            >No caso dos funcionários da Funarbe, os titulares e dependentes diretos têm direito a
+            um auxílio-saúde de 50% do valor da contribuição</b
+          >
+          prevista na tabela
+        </v-list-item>
+        <v-list-item :prepend-icon="PhNumberFour">
           Os demais dependentes são chamados de “agregados”: filhos acima de 21 anos ou de 24 anos,
           se forem estudantes universitários; netos; e bisnetos.
           <b>Os agregados não têm direito ao auxílio-saúde</b>, por isso, a contribuição devida por
@@ -394,14 +403,22 @@ function simulate() {
         forma, os resultados têm caráter ilustrativo, não gerando qualquer obrigação ao Agros.
       </v-list-item>
       <v-list-item :prepend-icon="PhNumberTwo">
-        As tabelas completas de contribuições aos planos e de auxílio-saúde estão disponíveis em
+        As tabelas de contribuições de todos os planos e de auxílio-saúde estão disponíveis em
         <a
-          href="https://www.agros.org.br/saude/tabelas-de-contribuicao-ao-plano-de-saude"
+          :href="
+            selInst === 'AGROS/UFV' || selInst === undefined
+              ? 'https://www.agros.org.br/saude/tabelas-de-contribuicao-ao-plano-de-saude'
+              : 'https://www.agros.org.br/saude/tabelas-de-contribuicao-ao-plano-de-saude#PlanosAgrosMaisSaudeVeVI'
+          "
           target="_blank"
           class="text-primary"
         >
           https://www.agros.org.br/saude/tabelas-de-contribuicao-ao-plano-de-saude
         </a>
+      </v-list-item>
+      <v-list-item :prepend-icon="PhNumberThree">
+        Os valores de contribuição aos planos de saúde disponíveis para os servidores da UFSJ, UFJF
+        e funcionários da Funarbe estão descritos nas tabelas V e VI.
       </v-list-item>
     </v-list>
   </div>
